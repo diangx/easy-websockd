@@ -1,0 +1,26 @@
+#!/bin/sh /etc/rc.common
+
+START=98
+STOP=10
+USE_PROCD=1
+NAME=easy-websockd
+PROG=/bin/easy-websockd
+
+PORT=8000
+ENABLE_LOGGING=1
+LOG_FILE="/var/log/easy-websockd.log"
+
+start_service() {
+    procd_open_instance
+    if [ "$ENABLE_LOGGING" -eq 1 ]; then
+        procd_set_param command "$PROG" -p "$PORT" -l "$LOG_FILE"
+    else
+        procd_set_param command "$PROG" -p "$PORT"
+    fi
+    procd_set_param respawn
+    procd_close_instance
+}
+
+reload_service() {
+    procd_send_signal "$NAME"
+}
